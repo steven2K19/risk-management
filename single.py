@@ -9,10 +9,14 @@ end = date(2020,1,1)
 stock = yf.Ticker(symbol)
 ohlc = stock.history(start=start, end=end)
 
-# return daily, monthly, annually
+# return daily, monthly, annually, holding period return
 ret_day = ohlc['Close'].pct_change().dropna()
 ret_month = ohlc['Close'].asfreq('M',method='ffill').pct_change().dropna()
 ret_year = ohlc['Close'].asfreq('A',method='ffill').pct_change().dropna()
+divid = ohlc[ohlc.Dividends>0]
+divid['repurchase_price']= (divid.Close + divid.Open + divid.Low + divid.Close)/4
+repurchase_share = (divid.Dividends/divid.repurchase_price).sum()
+hpr = (1+repurchase_share)*(ohlc.Close.iloc[-1]/ohlc.Close.iloc[0])-1
 
 # standard deviation daily, monthly, annualy; skew, kurtosis 
 std_day = np.std(ret_day)
