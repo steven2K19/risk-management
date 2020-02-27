@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import date, timedelta
 from scipy.stats import kurtosis, skew, norm
 import pandas_datareader as pdr
+import statsmodels.formula.api as sm
 
 symbol = "MSFT"    
 start = date(2010,1,1)
@@ -110,6 +111,31 @@ sortino = (mu_day-rf)/std_dn
 jenalpha = mu_day - (rf + beta*(muspy-rf))  
 msquare = (mu_day-rf)* stdspy/std_day - (muspy-rf)
 
+# Fama French
+def get_ff5(symbol,end):
+    end = end
+    start = end -timedelta(days=365*10) - pd.tseries.offsets.BusinessDay(n=2)
+    stock = yf.Ticker(symbol)
+    stock = stock.history(start=start, end=end)
+    dss = stock.Close.pct_change()*100
+    ds = pdr.DataReader('F-F_Research_Data_5_Factors_2x3_daily', 'famafrench',start=start, end=end)
+    ds = ds[0]
+    df = pd.concat([dss, ds], axis=1).dropna()
+    df['excess'] = df['Close'] - df['RF']
+    df['MKRF'] = df['Mkt-RF']
+    ff5 = sm.ols(formula='excess~ MKRF+SMB+HML+RMW+CMA', data=df).fit()
+    rsquare = ff5.rsquared_adj          # ff5.summary(), ff5.pvalues
+    alpha = ff5.params['Intercept']
+    mkrf = ff5.params['MKRF']
+    smb = ff5.params['SMB']
+    hml = ff5.params['HML']
+    rmw = ff5.params['RMW']
+    cma = ff5.params['CMA']
+    metric = [rsquare, alpha, mkrf, smb, hml, rmw, cma]
+    return metric
+
+metric = get_ff5(symbol,end)
 inf = [hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, var_para, var_hist, var_mod, var_con, var_mc, sharpe, treynor, rovar, sortino, jenalpha, msquare*100]
+inf= inf + metric
 inf = [round(item,4) for item in inf]
 inf.append(symbol)
