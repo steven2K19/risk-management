@@ -57,3 +57,22 @@ def get_beta(end, tick):
     spy_var = df['retx'].var()
     beta = cov/spy_var
     return beta
+
+############
+symbol = "MSFT"    
+end = date(2020,1,1)
+
+start = end -timedelta(days=365*5) - pd.tseries.offsets.BusinessDay(n=2)
+spy= yf.Ticker('SPY')
+spy= spy.history(start=start, end=end)
+tick= yf.Ticker(symbol)
+tick = tick.history(start=start, end=end)
+spy = spy['Close'].resample('BM').first()
+tick = tick['Close'].resample('BM').first()
+spy = spy.pct_change().dropna()
+tick = tick.pct_change().dropna()
+
+cov = df[['ret','retx']].cov()
+# cov = cov.iloc[0,1]
+# spy_var = df['retx'].var()
+# beta = cov/spy_var
