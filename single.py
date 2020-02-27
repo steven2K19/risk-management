@@ -68,17 +68,15 @@ beta = get_beta_month(symbol, end)
 cnf = 0.95
 cna= 1-cnf
 # Parametric VaR      VaR= share*price*VaR*np.sqrt(days)
-mu = np.mean(ret)
-sig = np.std(ret)
-skw = skew(ret)
-exkurt = kurtosis(ret)        
+mu = mu_day
+sig = std_day       
 kurt= exkurt + 3  
 var_para = abs(norm.ppf(cna, mu, sig)) 
 
 # History VaR
 cnf = 0.95
 cna = 1-cnf
-ret2 = np.sort(ret)
+ret2 = np.sort(ret_day)
 n = np.size(ret2)
 lefttail = int(n*cna)
 var_hist = abs(ret2[lefttail])
@@ -107,12 +105,11 @@ stdspy = np.std(retspy)
 
 sharpe = (mu_day-rf)/std_day
 treynor = (mu_day-rf)/beta
-rovar = mu_day/value_at_risk[0]
+rovar = mu_day/var_para
 sortino = (mu_day-rf)/std_dn  
 jenalpha = mu_day - (rf + beta*(muspy-rf))  
 msquare = (mu_day-rf)* stdspy/std_day - (muspy-rf)
 
-inf = [symbol, hpr, mu_day, mu_month, mu_year, std_day, std_month,
-       std_year, skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, 
-       var_para, var_hist, var_mod, var_cond, var_mc, sharpe, 
-       treynor, rovar, sortino, jenalpha, msquare ]
+inf = [symbol, hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, 
+       skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, var_para, var_hist, 
+       var_mod, var_con, var_mc, sharpe, treynor, rovar, sortino, jenalpha, msquare]
