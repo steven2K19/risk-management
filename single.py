@@ -64,44 +64,40 @@ def get_beta_month(sym,end):
     return beta
 beta = get_beta_month(symbol, end)
 
-def get_var(ret):
-    cnf = 0.95
-    cna= 1-cnf
-    # Parametric VaR      VaR= share*price*VaR*np.sqrt(days)
-    mu = np.mean(ret)
-    sig = np.std(ret)
-    skw = skew(ret)
-    exkurt = kurtosis(ret)        
-    kurt= exkurt + 3  
-    var_para = abs(norm.ppf(cna, mu, sig)) 
 
-    # History VaR
-    cnf = 0.95
-    cna = 1-cnf
-    ret2 = np.sort(ret)
-    n = np.size(ret2)
-    lefttail = int(n*cna)
-    var_hist = abs(ret2[lefttail])
+cnf = 0.95
+cna= 1-cnf
+# Parametric VaR      VaR= share*price*VaR*np.sqrt(days)
+mu = np.mean(ret)
+sig = np.std(ret)
+skw = skew(ret)
+exkurt = kurtosis(ret)        
+kurt= exkurt + 3  
+var_para = abs(norm.ppf(cna, mu, sig)) 
 
-    # Modified VaR 
-    z = norm.ppf(cna)
-    mod = z+1/6.*(z**2-1)*skw+1/24.*(z**3-3*z)*kurt-1/36.*(2*z**3-5*z)*skw**2
-    var_mod= abs(mu + mod*sig)
+# History VaR
+cnf = 0.95
+cna = 1-cnf
+ret2 = np.sort(ret)
+n = np.size(ret2)
+lefttail = int(n*cna)
+var_hist = abs(ret2[lefttail])
 
-    # CVaR  average 5% loss 
-    var_con = abs(ret2[ret2<= ret2[int(n*cna)]].mean())
+# Modified VaR 
+z = norm.ppf(cna)
+mod = z+1/6.*(z**2-1)*skw+1/24.*(z**3-3*z)*kurt-1/36.*(2*z**3-5*z)*skw**2
+var_mod= abs(mu + mod*sig)
 
-    # Monte Carlos VaR
-    simu=1000
-    ret3=np.random.normal(mu,sig,simu)
-    ret4=np.sort(ret3)
-    var_mc=abs(ret4[int(simu*cna)])
-    
-    x = [var_para, var_hist, var_mod, var_con, var_mc]
-    return x
+# CVaR  average 5% loss 
+var_con = abs(ret2[ret2<= ret2[int(n*cna)]].mean())
 
-value_at_risk = get_var(ret_day)
+# Monte Carlos VaR
+simu=1000
+ret3=np.random.normal(mu,sig,simu)
+ret4=np.sort(ret3)
+var_mc=abs(ret4[int(simu*cna)])
 
+# performance metrics 
 rf = pdr.DataReader('TB3MS','fred',start,end)
 rf = (rf['TB3MS'][-1]*0.01+1)**(1/365)-1
 spy = pdr.DataReader('SPY', 'yahoo',start,end)
@@ -116,6 +112,7 @@ sortino = (mu_day-rf)/std_dn
 jenalpha = mu_day - (rf + beta*(muspy-rf))  
 msquare = (mu_day-rf)* stdspy/std_day - (muspy-rf)
 
-inf = [end, hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, 
-      skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, sharpe, treynor, 
-      rovar, sortino, jenalpha, msquare ]
+inf = [symbol, hpr, mu_day, mu_month, mu_year, std_day, std_month,
+       std_year, skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, 
+       var_para, var_hist, var_mod, var_cond, var_mc, sharpe, 
+       treynor, rovar, sortino, jenalpha, msquare ]
