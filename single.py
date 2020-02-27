@@ -18,7 +18,7 @@ ret_day = ohlc['Close'].pct_change().dropna()
 ret_month = ohlc['Close'].asfreq('M',method='ffill').pct_change().dropna()
 ret_year = ohlc['Close'].asfreq('A',method='ffill').pct_change().dropna()
 divid = ohlc[ohlc.Dividends>0]
-divid['repurchase_price']= (divid.Close + divid.Open + divid.Low + divid.Close)/4
+divid['repurchase_price']= np.mean([divid.Close, divid.Open, divid.Low, divid.Close])
 repurchase_share = (divid.Dividends/divid.repurchase_price).sum()
 hpr = (1+repurchase_share)*ohlc.Close.iloc[-1]/ohlc.Close.iloc[0]-1
 mu_day = np.mean(ret_day)
@@ -110,6 +110,6 @@ sortino = (mu_day-rf)/std_dn
 jenalpha = mu_day - (rf + beta*(muspy-rf))  
 msquare = (mu_day-rf)* stdspy/std_day - (muspy-rf)
 
-inf = [symbol, hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, 
-       skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, var_para, var_hist, 
-       var_mod, var_con, var_mc, sharpe, treynor, rovar, sortino, jenalpha, msquare]
+inf = [hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, var_para, var_hist, var_mod, var_con, var_mc, sharpe, treynor, rovar, sortino, jenalpha, msquare*100]
+inf = [round(item,4) for item in inf]
+inf.append(symbol)
