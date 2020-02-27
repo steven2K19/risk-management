@@ -116,4 +116,6 @@ sortino = (mu_day-rf)/std_dn
 jenalpha = mu_day - (rf + beta*(muspy-rf))  
 msquare = (mu_day-rf)* stdspy/std_day - (muspy-rf)
 
-inf = [end, hpr, mu_day, mu_month, mu_year, ]
+inf = [end, hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, 
+      skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, sharpe, treynor, 
+      rovar, sortino, jenalpha, msquare ]
