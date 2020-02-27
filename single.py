@@ -9,6 +9,7 @@ import statsmodels.formula.api as sm
 symbol = "MSFT"    
 start = date(2010,1,1)
 end = date(2020,1,1)
+symlist = ['GOOG','FB','AAPL']
 
 # load data
 stock = yf.Ticker(symbol)
@@ -140,4 +141,8 @@ inf= inf + metric
 inf = [round(item,4) for item in inf]
 inf.append(symbol)
 
-names = [hpr, mu_day, mu_month, mu_year, std_day, std_month, std_year, skw, exkurt, mdd, std_dn, std_dnm, std_dny, beta, var_para, var_hist, var_mod, var_con, var_mc, sharpe, treynor, rovar, sortino, jenalpha, msquare, ff5rsquare, alpha, mkrf, smb, hml, rmw, cma, ticker]
+names = ['hpr', 'mu_day', 'mu_month', 'mu_year', 'std_day', 'std_month', 'std_year',
+         'skw', 'exkurt', 'mdd', 'std_dn', 'std_dnm', 'std_dny', 'beta', 'var_para',
+         'var_hist', 'var_mod', 'var_con', 'var_mc', 'sharpe', 'treynor', 'rovar',
+         'sortino', 'jenalpha', 'msquare', 'ff5rsquare', 'alpha',
+         'mkrf', 'smb', 'hml', 'rmw', 'cma', 'ticker']
