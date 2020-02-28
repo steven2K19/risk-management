@@ -155,5 +155,7 @@ names = ['hpr', 'mu_day', 'mu_month', 'mu_year', 'std_day', 'std_month', 'std_ye
 a=pd.DataFrame(basic(symbol, start,end))
 for sym in symlist:
     b=pd.DataFrame(basic(sym,start,end))
-    a= pd.concat([a,b])
+    a= pd.concat([a,b],axis=1)
     print(sym)
+df = a.transpose()
+df.columns=names
