@@ -159,3 +159,8 @@ for sym in symlist:
     print(sym)
 df = a.transpose()
 df.columns=names
+
+#names = ['holding period return', 'average daily return', 'average monthly return', 'average annual return', 'daily volatility', 'monthly volatility', 'annual volatility',
+         'skewness', 'excess kurtosis', 'max drawdown', 'daily downside volatility', 'monthly downside volatility', 'annual downside volatility', 'beta', 'parametric value at risk',
+         'historical value at risk', 'non-norm value at risk', 'condiitoned value at risk', 'monte carlose value at risk', 'sharpe ratio', 'treynor ratio', 'return on value at risk',
+         'sortino ratio', 'jen alpha', 'msquare', 'fama5 rsquare', 'fama5 alpha','mkrf', 'smb', 'hml', 'rmw', 'cma', 'ticker']
